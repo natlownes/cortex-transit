@@ -1,0 +1,112 @@
+View = require './view'
+Weather = require './weather'
+
+class TrainTracker extends View
+  render: (node)->
+    #http://www.transitchicago.com/traintracker/popout.aspx?sid=40340
+    html = """
+    <div class="train-tracker row">
+      <div class="col-xs-10">
+        <iframe class="iframe"
+          scrolling="no" frameborder="no"
+          src="http://www.transitchicago.com/traintracker/popout.aspx?sid=40340">
+        </iframe>
+      </div>
+      <div id="weather" class="col-xs-2">
+      </div>
+    </div>
+    """
+    html = """
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="header">
+          <h1>
+            <img class="logo" src="./cta-logo.svg" />
+            <span class="brand">cta</span> <span class="brand-sub">train tracker<sup>sm</sup></span>
+            <span class="title">estimated arrivals</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-10">
+        <div class="train-tracker">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="stop">
+                <h2>Berwyn</h2>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="route">
+                <div class="due pull-right">
+                  Due
+                </div>
+                <div class="line-name">
+                  Red Line #901 to
+                </div>
+                <div class="direction">
+                  95th/Dan Ryan
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="route">
+                <div class="due pull-right">
+                  4 min 
+                </div>
+                <div class="line-name">
+                  Red Line #904 to
+                </div>
+                <div class="direction">
+                  Howard
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="route">
+                <div class="due pull-right">
+                  9 min 
+                </div>
+                <div class="line-name">
+                  Red Line #820 to
+                </div>
+                <div class="direction">
+                  Howard
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="route">
+                <div class="due pull-right">
+                  10 min 
+                </div>
+                <div class="line-name">
+                  Red Line #902 scheduled to
+                </div>
+                <div class="direction">
+                  95th/Dan Ryan
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-2">
+        <div id="weather"></div>
+      </div>
+    </div>
+    """
+    node.html(html)
+    w = new Weather()
+    w.render($('#weather'))
+
+module.exports = TrainTracker
