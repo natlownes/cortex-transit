@@ -1,6 +1,7 @@
 inject      = require 'honk-di'
 {Transform} = require('stream')
 
+
 class Player extends Transform
   config:      inject 'config'
 

@@ -1,14 +1,16 @@
 moment = require 'moment'
 View = require './view'
+EventStream = require 'event-stream'
 
 class AdView extends View
   hasInitialized: false
 
   constructor: (@adStream, @adPlayer, @proofOfPlay) ->
+    @control = EventStream.pause()
+    @adStream.pipe(@control).pipe(@adPlayer).pipe(@proofOfPlay)
 
   stop: ->
-    if @hasInitialized
-      @adStream.pause()
+    @control.pause()
 
   render: (node) ->
     html = """
@@ -22,11 +24,7 @@ class AdView extends View
     @adPlayer.setVideoContainer(document.querySelector('.player video'))
     @adPlayer.setImageContainer(document.querySelector('.player img'))
 
-    if not @hasInitialized
-      @adStream.pipe(@adPlayer).pipe(@proofOfPlay)
-      @hasInitialized = true
+    @control.resume()
 
-    else
-      @adStream.resume()
 
 module.exports = AdView

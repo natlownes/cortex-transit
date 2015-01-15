@@ -1,8 +1,11 @@
 inject      = require 'honk-di'
-AdStream    = require './ad_stream'
-Logger      = require './logger'
-Player      = require './player'
-ProofOfPlay = require './proof_of_play'
+Player = require './player'
+{
+  AdStream
+  ProofOfPlay
+  Ajax
+  XMLHttpAjax
+} = require 'vistar-html5player'
 
 Scheduler = require './scheduler'
 TrainTrackerView = require './train_tracker_view'
@@ -10,17 +13,18 @@ TrainStatusView = require './train_status_view'
 EditorialView = require './editorial_view'
 AdView = require './ad_view'
 
+
 init = ->
   class Binder extends inject.Binder
     configure: ->
+      @bind(Ajax).to(XMLHttpAjax)
       @bindConstant('navigator').to window.navigator
       @bindConstant('config').to
-        scheme:            'http'
-        host:              'dev.api.vistarmedia.com'
-        path:              '/api/v1/get_ad/json'
-        apiKey:            '385851ce-9d9b-4819-931d-6bf4827e01a7'
-        networkId:         '8kevTrVYThe5mp9saV3LzQ'
-        numberOfScreens:   1
+        url:            'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
+        #apiKey:            '385851ce-9d9b-4819-931d-6bf4827e01a7'
+        #networkId:         '8kevTrVYThe5mp9saV3LzQ'
+        apiKey:            '58b68728-11d4-41ed-964a-95dca7b59abd'
+        networkId:         'Ex-f6cCtRcydns8mcQqFWQ'
         debug:             true
         width:             1024
         height:            768
@@ -46,17 +50,12 @@ init = ->
   ads    = injector.getInstance AdStream
   player = injector.getInstance Player
   pop    = injector.getInstance ProofOfPlay
-  log    = injector.getInstance Logger
-
-  ads.on 'log',    log.write
-  player.on 'log', log.write
-  pop.on 'log',    log.write
 
   schedules = new Array(
-    {view: new TrainTrackerView(), duration: 10000},
-    {view: new EditorialView(), duration: 10000},
+    {view: new AdView(ads, player, pop), duration: 10000}
+    {view: new TrainTrackerView(), duration: 10000}
+    {view: new EditorialView(), duration: 10000}
     {view: new TrainStatusView(), duration: 10000}
-    #{view: new AdView(ads, player, pop), duration: 4}
   )
   scheduler = new Scheduler($('#main'), schedules)
   scheduler.run()
