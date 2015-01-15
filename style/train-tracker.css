@@ -1,0 +1,65 @@
+.tracker .header .logo {
+  width: 8rem;
+}
+
+.tracker .header h1 {
+  font-size: 6rem;
+  color: #fff
+}
+
+.tracker .header .brand {
+  font-weight: bold;
+}
+
+.tracker .header .brand-sub sup {
+  vertical-align: top;
+  position: relative;
+  top: 3rem;
+  font-size: 3rem;
+  padding-left: 0.8rem;
+}
+
+.tracker .header .title {
+  color: #ffd400;
+}
+
+.tracker .weather-widget {
+  height: 100%;
+  width: 20%;
+  border: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.tracker .widget {
+  height: 100%;
+  width: 80%;
+  border: 0px !important;
+}
+
+.tracker .widget .stop {
+  background-color: #363636;
+  font-size: 4rem;
+  font-weight: bold;
+  padding: 0.8rem 0.8rem 0.8rem 1.5rem;
+}
+
+.tracker .widget .route {
+  background-color: #c60c30;
+  font-size: 4em;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.tracker .widget .line-name {
+  font-size: 4rem;
+}
+
+.tracker .widget .direction {
+  font-weight: bold;
+  font-size: 6rem;
+}
+
+.tracker .widget .due {
+  vertical-align: middle;
+  font-size: 6rem;
+}

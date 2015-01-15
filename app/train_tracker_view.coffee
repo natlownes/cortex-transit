@@ -44,7 +44,7 @@ class TrainTrackerView extends View
 
   render: (node) ->
     html = """
-    <div class="container-fluid">
+    <div class="tracker container-fluid">
     <div class="row">
       <div class="col-xs-12">
         <div class="header">
@@ -61,7 +61,7 @@ class TrainTrackerView extends View
         <table width="100%" class="table">
         <tbody>
           <tr>
-            <td class="transit-widget" valign="top">
+            <td class="widget" valign="top">
               #{@renderTransitWidget()}
             </td>
             <td class="weather-widget" valign="top">

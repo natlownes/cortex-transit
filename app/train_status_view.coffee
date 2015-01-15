@@ -11,20 +11,20 @@ class TrainStatusView extends View
 
   render: (node) ->
     html = """
-    <div class="container-fluid">
+    <div class="status container-fluid">
     <div class="row">
       <div class="col-xs-12">
-        <div class="status-header">
+        <div class="header">
           <i class="fa fa-info-circle"></i> Rail ('L') system status
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-12">
-        <table width="100%" class="table">
+        <table width="100%" class="table widget-container">
         <tbody>
           <tr>
-            <td class="status-widget" valign="top">
+            <td class="widget" valign="top">
               #{@renderStatusWidget()}
             </td>
             <td class="weather-widget" valign="top">

@@ -1,0 +1,43 @@
+#weather {
+  height: 100%;
+  width: 100%;
+  font-weight: bolder;
+  background-color: #262626;
+  padding: 1rem 1rem 0 1rem;
+  display: inline-block;
+}
+
+#weather .hour {
+  font-size: 8rem;
+  padding-top: 0.8rem;
+  line-height: 1;
+}
+
+#weather .ampm {
+  padding: 0;
+  font-size: 4rem;
+  line-height: 1;
+}
+
+#weather .day-of-week {
+  padding-top: 8rem;
+  font-size: 5rem;
+  line-height: 1.1;
+}
+
+#weather .day-of-month {
+  font-size: 4rem;
+  padding: 0;
+  line-height: 1.1;
+}
+
+#weather .weather-icon {
+  font-size: 15rem;
+  padding-top: 12rem;
+  line-height: 1;
+}
+
+#weather .temperature {
+  font-size: 10rem;
+  line-height: 1;
+}

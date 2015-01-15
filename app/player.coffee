@@ -22,8 +22,8 @@ class Player extends Transform
     @image = image
 
   hide: ->
-    @video.className = 'hidden'
-    @image.className = 'hidden'
+    @video?.className = 'hidden'
+    @image?.className = 'hidden'
 
   playImage: (advertisement, callback) ->
     @hide()
@@ -34,16 +34,16 @@ class Player extends Transform
       @emit 'log', name: 'Player', message: 'image stopping'
       callback(null, ad)
 
-    @image.setAttribute 'src', advertisement.asset_url
+    @image?.setAttribute 'src', advertisement.asset_url
     @emit 'log', name: 'Player', message: 'image playing'
-    @image.className = ''
+    @image?.className = ''
 
     @_timeoutId = setTimeout finished, duration
 
   playVideo: (advertisement) ->
     @hide()
     duration = advertisement.length_in_milliseconds
-    @video.setAttribute 'src', advertisement.asset_url
+    @video?.setAttribute 'src', advertisement.asset_url
 
   _transform: (advertisement, encoding, callback) ->
     @emit 'log', name: 'Player', message:

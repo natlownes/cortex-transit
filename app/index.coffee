@@ -51,11 +51,35 @@ init = ->
   player = injector.getInstance Player
   pop    = injector.getInstance ProofOfPlay
 
+  adView = new AdView(ads, player, pop)
+  trainTrackerView = new TrainTrackerView()
+  editorialView = new EditorialView()
+  trainStatusView = new TrainStatusView()
+
   schedules = new Array(
-    {view: new AdView(ads, player, pop), duration: 10000}
-    {view: new TrainTrackerView(), duration: 10000}
-    {view: new EditorialView(), duration: 10000}
-    {view: new TrainStatusView(), duration: 10000}
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: editorialView, duration: 6000},
+    {view: adView, duration: 7500},
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: trainStatusView, duration: 10000},
+    {view: adView, duration: 7500},
+    # this should be Train Line Alerts, which we don't have.
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: editorialView, duration: 6000},
+    {view: adView, duration: 7500},
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: editorialView, duration: 6000},
+    {view: adView, duration: 7500},
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: trainStatusView, duration: 10000},
+    {view: adView, duration: 7500},
+    {view: trainTrackerView, duration: 10000},
+    {view: adView, duration: 7500}
   )
   scheduler = new Scheduler($('#main'), schedules)
   scheduler.run()

@@ -13,7 +13,7 @@ class EditorialView extends View
     img = @editorialFeed.getRandom()
     html = """
     <div class="editorial-container"
-      style="background: url(#{img}) no-repeat center center fixed; -webkit-background-size:cover">
+      style="background: url(#{img}) no-repeat center center fixed; -webkit-background-size:contain">
     </div>
     """
 
