@@ -1,15 +1,16 @@
 moment = require 'moment'
-{Transform} = require 'stream'
 
-View = require './view'
+{Transform} = require 'stream'
 EventStream = require 'event-stream'
+
+View = require '../index'
 
 class AdCacher extends Transform
   constructor: ->
     super(highWaterMark: 1, objectMode: true)
 
   cacheImage: (advertisement) ->
-    console.log "Will cache img: ", advertisement.asset_url
+    console.log "CACHE: img: ", advertisement.asset_url
     img = $('#cache-img')
     if img.length == 0
       img = $('<img id="cache-img">')
@@ -18,7 +19,7 @@ class AdCacher extends Transform
     img.appendTo('body')
 
   cacheVideo: (advertisement) ->
-    console.log "Will cache vid: ", advertisement.asset_url
+    console.log "CACHE: vid: ", advertisement.asset_url
     vid = $('#cache-vid')
     if vid.length == 0
       vid = $('<video id="cache-vid">')
@@ -42,7 +43,11 @@ class AdView extends View
     @reader = EventStream.pause()
     @control = EventStream.pause()
     @cacher = new AdCacher()
-    @adStream.pipe(@reader).pipe(@cacher).pipe(@control).pipe(@adPlayer).pipe(@proofOfPlay)
+    @adStream.pipe(@reader)
+      # .pipe(@cacher)
+      .pipe(@control)
+      .pipe(@adPlayer)
+      .pipe(@proofOfPlay)
     @control.pause()
     @reader.resume()
 

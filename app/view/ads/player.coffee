@@ -1,7 +1,6 @@
 inject      = require 'honk-di'
 {Transform} = require('stream')
 
-
 class Player extends Transform
   config:      inject 'config'
 
@@ -26,6 +25,7 @@ class Player extends Transform
     @image?.className = 'hidden'
 
   playImage: (advertisement, callback) ->
+    console.log "PLAY: image: ", advertisement.asset_url
     @hide()
     duration = advertisement.length_in_milliseconds
     finished = =>
@@ -41,6 +41,7 @@ class Player extends Transform
     @_timeoutId = setTimeout finished, duration
 
   playVideo: (advertisement) ->
+    console.log "PLAY: video: ", advertisement.asset_url
     @hide()
     duration = advertisement.length_in_milliseconds
     @video?.setAttribute 'src', advertisement.asset_url

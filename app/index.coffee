@@ -1,18 +1,20 @@
 inject      = require 'honk-di'
-Player = require './player'
-{
-  AdStream
-  ProofOfPlay
-  Ajax
-  XMLHttpAjax
-} = require 'vistar-html5player'
+
+vistar = require 'vistar-html5player'
+AdStream = vistar.AdStream
+ProofOfPlay = vistar.ProofOfPlay
+Ajax = vistar.Ajax
+XMLHttpAjax = vistar.XMLHttpAjax
 
 Scheduler = require './scheduler'
-TrainTrackerView = require './train_tracker_view'
-TrainStatusView = require './train_status_view'
-EditorialView = require './editorial_view'
-AdView = require './ad_view'
+TrainTrackerView = require './view/tracker'
+TrainStatusView = require './view/status'
+EditorialView = require './view/editorial'
+AdView = require './view/ads'
+Player = require './view/ads/player'
 
+EditorialFeed = require './model/editorial_feed'
+TrainStatusFeed = require './model/train_status_feed'
 
 init = ->
   class Binder extends inject.Binder
@@ -20,28 +22,29 @@ init = ->
       @bind(Ajax).to(XMLHttpAjax)
       @bindConstant('navigator').to window.navigator
       @bindConstant('config').to
-        url:            'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
-        #apiKey:            '385851ce-9d9b-4819-931d-6bf4827e01a7'
-        #networkId:         '8kevTrVYThe5mp9saV3LzQ'
-        apiKey:            '58b68728-11d4-41ed-964a-95dca7b59abd'
-        networkId:         'Ex-f6cCtRcydns8mcQqFWQ'
-        debug:             true
-        width:             1024
-        height:            768
-        allowAudio:        false
-        directConnection:  false
-        deviceId:          'testvenue1'
-        venueId:           'testvenue1'
-        latitude:          39.9859241
-        longitude:         -75.1299363
-        queueSize:         12
+        url:                'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
+        apiKey:             'b5f66eea-98cb-4224-bccf-6324c80cfd08'
+        networkId:          'sthdw8o-Qm6M2-7V4-VsPw'
+        debug:              true
+        width:              1366
+        height:             768
+        allowAudio:         false
+        directConnection:   false
+        deviceId:           'testvenue1'
+        venueId:            'testvenue1'
+        cpm_floor_cents:    30
+        min_duration:       7
+        max_duration:       8
+        latitude:           39.985924
+        longitude:          -75.12994
+        queueSize:          12
         displayArea: [
           {
-            id:               'display-0'
-            width:            1024
-            height:           768
-            allow_audio:      false
-            cpm_floor_cents:  90
+            id:              'display-0'
+            width:           1366
+            height:          768
+            allow_audio:     false
+            cpm_floor_cents: 30
           }
         ]
 
@@ -53,8 +56,11 @@ init = ->
 
   adView = new AdView(ads, player, pop)
   trainTrackerView = new TrainTrackerView()
-  editorialView = new EditorialView()
-  trainStatusView = new TrainStatusView()
+
+  editorialFeed = new EditorialFeed()
+  editorialView = new EditorialView(editorialFeed)
+  trainStatusFeed = new TrainStatusFeed()
+  trainStatusView = new TrainStatusView(trainStatusFeed)
 
   schedules = new Array(
     {view: trainTrackerView, duration: 10000},
@@ -81,7 +87,7 @@ init = ->
     {view: trainTrackerView, duration: 10000},
     {view: adView, duration: 7500}
   )
-  scheduler = new Scheduler($('#main'), schedules)
+  scheduler = new Scheduler($('#cortex-main'), schedules)
   scheduler.run()
 
 module.exports = init()

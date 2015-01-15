@@ -1,11 +1,10 @@
 moment = require 'moment'
-View = require './view'
-TrainStatusFeed = require './train_status_feed'
-WeatherView = require './weather_view'
+
+View = require '../index'
+WeatherView = require '../weather'
 
 class TrainStatusView extends View
-  constructor: ->
-    @trainStatusFeed = new TrainStatusFeed()
+  constructor: (@feed)->
 
   stop: ->
 
@@ -28,7 +27,7 @@ class TrainStatusView extends View
               #{@renderStatusWidget()}
             </td>
             <td class="weather-widget" valign="top">
-              <div id="weather"></div>
+              <div class="weather"></div>
             </td>
           </tr>
         </tbody>
@@ -39,14 +38,14 @@ class TrainStatusView extends View
     """
     node.html(html)
     w = new WeatherView()
-    w.render($('#weather'))
+    w.render($('.weather-widget .weather'))
 
   renderStatusWidget: ->
     html = """
     <table width="100%" class="table line-table">
     <tbody>
     """
-    for line in @trainStatusFeed.getTrainStatus()
+    for line in @feed.getTrainStatus()
       html = html + """
       <tr>
         <td valign="top">

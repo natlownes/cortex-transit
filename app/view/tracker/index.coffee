@@ -1,6 +1,7 @@
 moment = require 'moment'
-View = require './view'
-WeatherView = require './weather_view'
+
+View = require '../index'
+WeatherView = require '../weather'
 
 class TrainFeed
   rtt: 11 # cycle every 11mins
@@ -65,7 +66,7 @@ class TrainTrackerView extends View
               #{@renderTransitWidget()}
             </td>
             <td class="weather-widget" valign="top">
-              <div id="weather"></div>
+              <div class="weather"></div>
             </td>
           </tr>
         </tbody>
@@ -76,7 +77,7 @@ class TrainTrackerView extends View
     """
     node.html(html)
     w = new WeatherView()
-    w.render($('#weather'))
+    w.render($('.weather-widget .weather'))
 
   renderTransitWidget: ->
     schedule = @trainFeed.getCurrentSchedule()
