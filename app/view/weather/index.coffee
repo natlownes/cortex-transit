@@ -7,6 +7,7 @@ CHICAGO_WEATHER_FEED = "https://query.yahooapis.com/v1/public/yql?q=select%20*%2
 class WeatherView extends View
   render: (node) ->
     @updateWeatherWidget node
+    true
 
   updateWeatherWidget: (node) ->
     $.get(CHICAGO_WEATHER_FEED, (

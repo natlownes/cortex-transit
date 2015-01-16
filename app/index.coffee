@@ -1,10 +1,11 @@
 inject      = require 'honk-di'
 
 vistar = require 'vistar-html5player'
-AdStream = vistar.AdStream
-ProofOfPlay = vistar.ProofOfPlay
 Ajax = vistar.Ajax
 XMLHttpAjax = vistar.XMLHttpAjax
+
+AdRequest = require './model/ad_request'
+AdService = require './model/ad_service'
 
 Scheduler = require './scheduler'
 TrainTrackerView = require './view/tracker'
@@ -50,42 +51,42 @@ init = ->
 
   injector = new inject.Injector(new Binder)
 
-  ads    = injector.getInstance AdStream
-  player = injector.getInstance Player
-  pop    = injector.getInstance ProofOfPlay
+  adService = injector.getInstance AdService
+  player = new Player()
+  adView = new AdView(adService, player)
 
-  adView = new AdView(ads, player, pop)
   trainTrackerView = new TrainTrackerView()
 
   editorialFeed = new EditorialFeed()
   editorialView = new EditorialView(editorialFeed)
+
   trainStatusFeed = new TrainStatusFeed()
   trainStatusView = new TrainStatusView(trainStatusFeed)
 
   schedules = new Array(
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: editorialView, duration: 6000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainStatusView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     # this should be Train Line Alerts, which we don't have.
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: editorialView, duration: 6000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: editorialView, duration: 6000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainStatusView, duration: 10000},
-    {view: adView, duration: 7500},
+    {view: adView, alternative: editorialView, duration: 7500},
     {view: trainTrackerView, duration: 10000},
-    {view: adView, duration: 7500}
+    {view: adView, alternative: editorialView, duration: 7500},
   )
   scheduler = new Scheduler($('#cortex-main'), schedules)
   scheduler.run()

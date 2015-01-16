@@ -16,5 +16,6 @@ class EditorialView extends View
     """
 
     node.html(html)
+    true
 
 module.exports = EditorialView
