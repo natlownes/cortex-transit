@@ -9,7 +9,12 @@ class Scheduler
 
   showNext: ->
     if @current?
-      @current.view.stop()
+      if @current.view.isDone()
+        @current.view.stop()
+      else
+        console.log "Current view is not done yet. Will check in 500ms."
+        setTimeout(@showNext.bind(@), 500)
+        return
 
     if @next >= @schedule.length
       @next = 0
@@ -33,6 +38,6 @@ class Scheduler
         return
 
     @next = @next + 1
-    @timer = setTimeout(@showNext.bind(@), @current.duration)
+    setTimeout(@showNext.bind(@), @current.duration)
 
 module.exports = Scheduler

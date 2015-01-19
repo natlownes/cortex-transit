@@ -3,4 +3,7 @@ class View
 
   stop: ->
 
+  isDone: ->
+    true
+
 module.exports = View

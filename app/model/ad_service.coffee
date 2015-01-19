@@ -6,8 +6,26 @@ ProofOfPlay = vistar.ProofOfPlay
 AdRequest = require './ad_request'
 
 class AdCacher
-  cacheImage: (advertisement, id) ->
+  imgCacheIdx: -1
+  vidCacheIdx: -1
+
+  getImgCid: ->
+    @imgCacheIdx = @imgCacheIdx + 1
+    if @imgCacheIdx > 5
+      @imgCacheIdx = 0
+
+    @imgCacheIdx
+
+  getVidCid: ->
+    @vidCacheIdx = @vidCacheIdx + 1
+    if @vidCacheIdx > 5
+      @vidCacheIdx = 0
+
+    @vidCacheIdx
+
+  cacheImage: (advertisement) ->
     console.log "CACHE: img: ", advertisement.asset_url
+    id = @getImgCid()
     cacheId = "cache-img-#{id}"
     img = $("##{cacheId}")
     if img.length == 0
@@ -16,8 +34,9 @@ class AdCacher
     img.css('display', 'none')
     img.appendTo('body')
 
-  cacheVideo: (advertisement, id) ->
+  cacheVideo: (advertisement) ->
     console.log "CACHE: vid: ", advertisement.asset_url
+    id = @getVidCid()
     cacheId = "cache-vid-#{id}"
     vid = $("##{cacheId}")
     if vid.length == 0
@@ -43,12 +62,14 @@ class AdService
 
   fetch: ->
     success = (response) ->
-      idx = 0
       for ad in (response?.advertisement or [])
+        @cacher.cache ad
         @ads.push ad
-        @cacher.cache ad, idx
-        idx = idx + 1
 
+    # Ask for two ads to prepare AdView for next two ad slots.
+    # TODO(hamza): Check with Vistar to see if there's a better way of doing
+    # this.
+    @request.fetch().then(success.bind(@)).done()
     @request.fetch().then(success.bind(@)).done()
 
   get: ->

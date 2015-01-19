@@ -1,10 +1,15 @@
 View = require '../index'
 
 class AdView extends View
+  done: false
+
   constructor: (@adService, @adPlayer) ->
     @adService.fetch()
 
   stop: ->
+
+  isDone: ->
+    @done
 
   render: (node) ->
     ad = @adService.get()
@@ -22,7 +27,9 @@ class AdView extends View
     @video = document.querySelector('.player video')
     @image = document.querySelector('.player img')
 
+    @done = false
     @adPlayer.play(ad, @video, @image).then (=>
+      @done = true
       @adService.finalize(ad)
     ), (=>
       @adService.expire(ad)
