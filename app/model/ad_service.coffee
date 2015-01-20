@@ -35,6 +35,7 @@ class AdCacher
     img.appendTo('body')
 
   cacheVideo: (advertisement) ->
+    return
     console.log "CACHE: vid: ", advertisement.asset_url
     id = @getVidCid()
     cacheId = "cache-vid-#{id}"
