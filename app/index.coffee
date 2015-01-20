@@ -4,6 +4,7 @@ vistar = require 'vistar-html5player'
 Ajax = vistar.Ajax
 XMLHttpAjax = vistar.XMLHttpAjax
 
+Cacher = require './model/cacher'
 AdRequest = require './model/ad_request'
 AdService = require './model/ad_service'
 
@@ -51,13 +52,15 @@ init = ->
 
   injector = new inject.Injector(new Binder)
 
+  cacher = injector.getInstance Cacher
+
   adService = injector.getInstance AdService
   player = new Player()
   adView = new AdView(adService, player)
 
   trainTrackerView = new TrainTrackerView()
 
-  editorialFeed = new EditorialFeed()
+  editorialFeed = new EditorialFeed(cacher)
   editorialView = new EditorialView(editorialFeed)
 
   trainStatusFeed = new TrainStatusFeed()

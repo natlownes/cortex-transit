@@ -5,66 +5,20 @@ ProofOfPlay = vistar.ProofOfPlay
 
 AdRequest = require './ad_request'
 
-class AdCacher
-  imgCacheIdx: -1
-  vidCacheIdx: -1
-
-  getImgCid: ->
-    @imgCacheIdx = @imgCacheIdx + 1
-    if @imgCacheIdx > 5
-      @imgCacheIdx = 0
-
-    @imgCacheIdx
-
-  getVidCid: ->
-    @vidCacheIdx = @vidCacheIdx + 1
-    if @vidCacheIdx > 5
-      @vidCacheIdx = 0
-
-    @vidCacheIdx
-
-  cacheImage: (advertisement) ->
-    console.log "CACHE: img: ", advertisement.asset_url
-    id = @getImgCid()
-    cacheId = "cache-img-#{id}"
-    img = $("##{cacheId}")
-    if img.length == 0
-      img = $("<img id=\"#{cacheId}\">")
-    img.attr('src', advertisement.asset_url)
-    img.css('display', 'none')
-    img.appendTo('body')
-
-  cacheVideo: (advertisement) ->
-    return
-    console.log "CACHE: vid: ", advertisement.asset_url
-    id = @getVidCid()
-    cacheId = "cache-vid-#{id}"
-    vid = $("##{cacheId}")
-    if vid.length == 0
-      vid = $("<video id=\"#{cacheId}\" preload=\"auto\" muted>")
-    vid.attr('src', advertisement.asset_url)
-    vid.css('display', 'none')
-    vid.appendTo('body')
-
-  cache: (advertisement, id) ->
-    mimeType    = advertisement.mime_type
-    if advertisement.mime_type.match(/^image/)
-      @cacheImage(advertisement, id)
-    else if advertisement.mime_type.match(/^video/)
-      @cacheVideo(advertisement, id)
+Cacher = require './cacher'
 
 class AdService
   @scope:     'singleton'
 
   request:    inject AdRequest
   pop:        inject ProofOfPlay
+  cacher:     inject Cacher
   ads:        new Array()
-  cacher:     new AdCacher()
 
   fetch: ->
     success = (response) ->
       for ad in (response?.advertisement or [])
-        @cacher.cache ad
+        @cacher.cacheAd ad
         @ads.push ad
 
     # Ask for two ads to prepare AdView for next two ad slots.

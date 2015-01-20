@@ -8,8 +8,9 @@ FEEDS = [
 
 class EditorialFeed
   images: []
+  next: undefined
 
-  constructor: ->
+  constructor: (@cacher) ->
     @fetch()
     fetch = ->
       @fetch()
@@ -27,6 +28,8 @@ class EditorialFeed
         allImages = allImages.concat(images)
 
       @images = allImages
+      # ask for an image to initiate caching.
+      @getRandom()
     ), @error
 
   parse: (data) ->
@@ -46,6 +49,18 @@ class EditorialFeed
     console.log "Failed to fetch data feed: ", err
 
   getRandom: ->
-    @images[Math.floor(Math.random() * @images.length)]
+    if not @images? or @images.length == 0
+      return null
+
+    if @next?
+      current = @next
+
+    else
+      current = @images[Math.floor(Math.random() * @images.length)]
+
+    @next = @images[Math.floor(Math.random() * @images.length)]
+    @cacher.cacheImage @next
+
+    current
 
 module.exports = EditorialFeed
