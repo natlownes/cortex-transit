@@ -13,13 +13,17 @@ class AdView extends View
 
   render: (node) ->
     ad = @adService.get()
+
     if not ad?
+      @done = true
       # this will force the scheduler to render the fallback view.
       return false
 
     html = """
     <div class="player">
-      <video src="" autoplay muted></video>
+      <video autoplay muted>
+        <source></source>
+      </video>
       <img src="" />
     </div>
     """
@@ -29,9 +33,13 @@ class AdView extends View
 
     @done = false
     @adPlayer.play(ad, @video, @image).then (=>
+      console.log "Player finished with success..."
       @done = true
       @adService.finalize(ad)
     ), (=>
+      console.log "Player finished with error..."
+      # view is done, even when there was an error.
+      @done = true
       @adService.expire(ad)
       console.log "Failed to play ad: ", ad
     )

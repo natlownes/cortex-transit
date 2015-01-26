@@ -9,6 +9,10 @@ class TrainStatusView extends View
   stop: ->
 
   render: (node) ->
+    trainStatus = @feed.getTrainStatus()
+    if not trainStatus? or trainStatus.length == 0
+      return false
+
     html = """
     <div class="status container-fluid">
     <div class="row">
@@ -24,7 +28,7 @@ class TrainStatusView extends View
         <tbody>
           <tr>
             <td class="widget" valign="top">
-              #{@renderStatusWidget()}
+              #{@renderStatusWidget(trainStatus)}
             </td>
             <td class="weather-widget" valign="top">
               <div class="weather"></div>
@@ -40,12 +44,12 @@ class TrainStatusView extends View
     w = new WeatherView()
     w.render($('.weather-widget .weather'))
 
-  renderStatusWidget: ->
+  renderStatusWidget: (trainStatus) ->
     html = """
     <table width="100%" class="table line-table">
     <tbody>
     """
-    for line in @feed.getTrainStatus()
+    for line in trainStatus
       html = html + """
       <tr>
         <td valign="top">

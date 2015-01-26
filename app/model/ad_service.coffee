@@ -24,8 +24,11 @@ class AdService
     # Ask for two ads to prepare AdView for next two ad slots.
     # TODO(hamza): Check with Vistar to see if there's a better way of doing
     # this.
-    @request.fetch().then(success.bind(@)).done()
-    @request.fetch().then(success.bind(@)).done()
+    try
+      @request.fetch().then(success.bind(@)).done()
+      @request.fetch().then(success.bind(@)).done()
+    catch e
+      console.log "Failed to fetch ads: ", e
 
   get: ->
     if @ads.length > 0
@@ -35,15 +38,22 @@ class AdService
 
       ad
     else
+      @fetch()
       undefined
 
   finalize: (ad) ->
     console.log "POP: ", ad.asset_url
-    pop.confirm(ad)
+    try
+      @pop.confirm(ad)
+    catch e
+      console.log "POP failed. ", e
 
   expire: (ad) ->
     console.log "EXPIRE: ", ad.asset_url
-    pop.expire(ad)
+    try
+      @pop.expire(ad)
+    catch e
+      console.log "EXPIRE failed. ", e
 
 
 module.exports = AdService

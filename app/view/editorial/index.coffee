@@ -9,13 +9,17 @@ class EditorialView extends View
 
   render: (node) ->
     img = @feed.getRandom()
-    html = """
-    <div class="editorial"
-      style="background: url(#{img}) no-repeat center center fixed;">
-    </div>
-    """
+    if img?
+      html = """
+      <div class="editorial"
+        style="background: url(#{img}) no-repeat center center fixed;">
+      </div>
+      """
 
-    node.html(html)
-    true
+      node.html(html)
+      true
+
+    else
+      false
 
 module.exports = EditorialView

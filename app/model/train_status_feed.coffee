@@ -15,7 +15,11 @@ class TrainStatusFeed
     console.log "Fetching train status feed: #{FEED}"
     parse = (data) ->
       @parse data
-    window.Cortex.net.get(FEED, {encoding: 'utf8'}).then(parse.bind(@), @error)
+
+    try
+      window.Cortex.net.get(FEED, {encoding: 'utf8'}).then(parse.bind(@), @error)
+    catch e
+      @error e
 
   error: (err) ->
     console.log "Failed to fetch train status feed. ", err
@@ -56,9 +60,13 @@ class TrainStatusFeed
       else
         0
 
-    @trainStatus = lines
+    if lines.length > 0
+      @trainStatus = lines
 
   getTrainStatus: ->
+    if @trainStatus.length == 0
+      @fetch()
+
     @trainStatus
 
 module.exports = TrainStatusFeed

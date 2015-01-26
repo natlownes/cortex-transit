@@ -19,9 +19,9 @@ class Player
 
     @_timeoutId = setTimeout finished, duration
 
-  playVideo: (advertisement) ->
+  playVideo: (source, advertisement) ->
     @hide()
-    @video?.setAttribute 'src', advertisement.asset_url
+    source.setAttribute 'src', advertisement.asset_url
 
   play: (advertisement, videoContainer, imageContainer) ->
     @image = imageContainer
@@ -31,9 +31,17 @@ class Player
         @playImage(advertisement, resolve)
       else if advertisement.mime_type.match(/^video/)
         @video.addEventListener 'ended', resolve
+        @video.addEventListener 'stalled', (e) =>
+          console.log "video player is stalled.", e
+          reject e
+        sources = @video.querySelectorAll('source')
+        source = sources[sources.length - 1]
+        source.addEventListener 'error', (e) =>
+          console.log "video player got an error: ", e
+          reject e
         @video.addEventListener 'play', =>
           @video.className = ''
-        @playVideo(advertisement)
+        @playVideo(source, advertisement)
       else
         reject()
 

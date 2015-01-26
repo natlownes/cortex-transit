@@ -27,7 +27,9 @@ class EditorialFeed
         images = @parse result
         allImages = allImages.concat(images)
 
-      @images = allImages
+      if allImages.length > 0
+        @images = allImages
+
       # ask for an image to initiate caching.
       @getRandom()
     ), @error
