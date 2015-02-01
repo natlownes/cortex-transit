@@ -94,4 +94,5 @@ init = ->
   scheduler = new Scheduler($('#cortex-main'), schedules)
   scheduler.run()
 
+
 module.exports = init()

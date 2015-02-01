@@ -17,7 +17,7 @@ class EditorialFeed
     setInterval(fetch.bind(@), 15 * 60 * 1000)
 
   _fetchOne: (feed) ->
-    window.Cortex.net.get(feed, encoding: 'utf8')
+    window.Cortex?.net.get(feed, encoding: 'utf8')
 
   fetch: ->
     promises = promise.all(FEEDS.map(@_fetchOne))
