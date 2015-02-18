@@ -23,16 +23,18 @@ class AdService
         if ad.mime_type.match(/^video/)
           opts =
             cache: 24 * 60 * 60 * 1000
-          CortexNet.download(ad.asset_url, opts).then (
+            stripBom: false
+            retry: 0
+          CortexNet.download ad.asset_url, opts.cache, (
             (path) =>
               console.log "Replacing asset url #{ad.asset_url} with #{path}"
               ad.asset_url = path
               @ads.push ad
-          ), (
+            ), (
             (err) =>
               console.log "Failed to fetch ad asset: #{ad.asset_url}. err=", err
               @expire ad
-          )
+            )
         else
           @cacher.cacheAd ad
           @ads.push ad

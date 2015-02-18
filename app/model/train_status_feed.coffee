@@ -16,8 +16,23 @@ class TrainStatusFeed
     parse = (data) ->
       @parse data
 
+    error = (err) ->
+      @error err
+
+    error.bind(@)
+
     try
-      window.Cortex.net.get(FEED, {encoding: 'utf8'}).then(parse.bind(@), @error)
+      opts =
+        cache: 3 * 60 * 1000
+        stripBom: true
+        retry: 3
+      window.Cortex.net.download FEED, opts, (
+        (file) =>
+          $.get file, parse.bind(@)
+      ), (
+        (err) =>
+          error err
+      )
     catch e
       @error e
 

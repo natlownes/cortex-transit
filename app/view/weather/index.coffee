@@ -12,6 +12,7 @@ class WeatherView extends View
   updateWeatherWidget: (node) ->
     $.get(CHICAGO_WEATHER_FEED, (
       (data) =>
+        console.log "Wether data => ", data
         if data?.query?.results?.channel?.item?.condition?
           condition = data.query.results.channel.item.condition
           temp = condition.temp
@@ -40,6 +41,8 @@ class WeatherView extends View
           """
           node.html(html)
       )
+    ).fail((err) =>
+      console.log "Weather call failed: ", err
     )
 
 module.exports = WeatherView

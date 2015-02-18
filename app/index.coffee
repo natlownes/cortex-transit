@@ -1,8 +1,10 @@
 inject      = require 'honk-di'
 
-vistar = require 'vistar-html5player'
-Ajax = vistar.Ajax
-XMLHttpAjax = vistar.XMLHttpAjax
+Cortex = window.Cortex
+
+Vistar = require 'vistar-html5player'
+Ajax = Vistar.Ajax
+XMLHttpAjax = Vistar.XMLHttpAjax
 
 Cacher = require './model/cacher'
 AdRequest = require './model/ad_request'
@@ -23,10 +25,10 @@ init = ->
     configure: ->
       @bind(Ajax).to(XMLHttpAjax)
       @bindConstant('navigator').to window.navigator
-      @bindConstant('config').to
-        url:                'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
-        apiKey:             'b5f66eea-98cb-4224-bccf-6324c80cfd08'
-        networkId:          'sthdw8o-Qm6M2-7V4-VsPw'
+      config =
+        url:                'http://staging.api.vistarmedia.com/api/v1/get_ad/json'
+        apiKey:             '833137c5-1531-48b3-91ae-78167a703bbf'
+        networkId:          'gYLccMrITS-5HuSItsmcyQ'
         debug:              true
         width:              1366
         height:             768
@@ -50,11 +52,21 @@ init = ->
           }
         ]
 
+      if not Cortex?.player.hasNativeVideoSupport()
+        # Desktop version, get ads from a different end point until we
+        # fix the mime type problem.
+        config.url = 'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
+        config.apiKey = 'b5f66eea-98cb-4224-bccf-6324c80cfd08'
+        config.networkId = 'sthdw8o-Qm6M2-7V4-VsPw'
+
+      @bindConstant('config').to config
+
   injector = new inject.Injector(new Binder)
 
   cacher = injector.getInstance Cacher
 
   adService = injector.getInstance AdService
+
   player = new Player()
   adView = new AdView(adService, player)
 
@@ -65,7 +77,6 @@ init = ->
 
   trainStatusFeed = new TrainStatusFeed()
   trainStatusView = new TrainStatusView(trainStatusFeed)
-
   schedules = new Array(
     {view: trainTrackerView, duration: 10000},
     {view: adView, alternative: editorialView, duration: 7500},
@@ -91,6 +102,13 @@ init = ->
     {view: trainTrackerView, duration: 10000},
     {view: adView, alternative: editorialView, duration: 7500},
   )
+  '''
+  schedules = new Array(
+    {view: trainTrackerView, duration: 5000000},
+    #{view: trainStatusView, duration: 5000},
+    {view: editorialView, duration: 5000000},
+  )
+  '''
   scheduler = new Scheduler($('#cortex-main'), schedules)
   scheduler.run()
 

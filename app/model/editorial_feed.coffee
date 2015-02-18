@@ -1,5 +1,7 @@
 promise = require 'promise'
 
+CortexNet = window.Cortex?.net
+
 FEEDS = [
   "http://kitchen.screenfeed.com/feed/N1_7g9pOxkaEqnDD_EEiog?duration=15",
   "http://kitchen.screenfeed.com/feed/rjn9iSgn8UuNEoqoi5acLw?duration=30",
@@ -14,25 +16,44 @@ class EditorialFeed
     @fetch()
     fetch = ->
       @fetch()
-    setInterval(fetch.bind(@), 15 * 60 * 1000)
+    setInterval(fetch.bind(@), 60 * 1000)
 
-  _fetchOne: (feed) ->
-    window.Cortex?.net.get(feed, encoding: 'utf8')
+  _promisedDownload: (url, opts) ->
+    console.log "Will download feed: #{url}"
+    parse = (data) =>
+      @parse data
+    parse.bind(@)
+    new promise (resolve, reject) =>
+      CortexNet.download url, opts, (
+        (file) =>
+          $.get file, (data) =>
+            feedImages = parse(data)
+            resolve feedImages
+      ), reject
 
   fetch: ->
-    promises = promise.all(FEEDS.map(@_fetchOne))
-    promises.done ((results) =>
-      allImages = []
-      for result in results
-        images = @parse result
-        allImages = allImages.concat(images)
+    opts =
+      cache: 60 * 60 * 1000
+      stripBom: true
+      retry: 3
+    allPromises = []
+    for feed in FEEDS
+      allPromises.push(@_promisedDownload(feed, opts))
 
-      if allImages.length > 0
-        @images = allImages
+    promises = promise.all(allPromises)
+    promises.done (
+      (results) =>
+        allImages = []
+        for result in results
+          allImages = allImages.concat(result)
 
-      # ask for an image to initiate caching.
-      @getRandom()
-    ), @error
+        if allImages.length > 0
+          @images = allImages
+          @getRandom()
+    ), (
+      (err) =>
+        console.log "Failed to fetch editorial feeds.", err
+    )
 
   parse: (data) ->
     xmlDoc = $.parseXML(data)
@@ -45,12 +66,14 @@ class EditorialFeed
       url = img.attr('url')
       images.push url
 
+    console.log "Feed parsed: Total images found: #{images.length}"
     images
 
   error: (err) ->
     console.log "Failed to fetch data feed: ", err
 
   getRandom: ->
+    console.log "Total editorial images: #{@images?.length}"
     if not @images? or @images.length == 0
       return null
 
