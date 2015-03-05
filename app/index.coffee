@@ -2,29 +2,31 @@ inject      = require 'honk-di'
 
 Cortex = window.Cortex
 
-Vistar = require 'vistar-html5player'
-Ajax = Vistar.Ajax
-XMLHttpAjax = Vistar.XMLHttpAjax
+Vistar           = require 'vistar-html5player'
+Ajax             = Vistar.Ajax
+XMLHttpAjax      = Vistar.XMLHttpAjax
 
-Cacher = require './model/cacher'
-AdRequest = require './model/ad_request'
-AdService = require './model/ad_service'
+Cacher           = require './model/cacher'
 
-Scheduler = require './scheduler'
+Scheduler        = require './scheduler'
 TrainTrackerView = require './view/tracker'
-TrainStatusView = require './view/status'
-EditorialView = require './view/editorial'
-AdView = require './view/ads'
-Player = require './view/ads/player'
+TrainStatusView  = require './view/status'
+EditorialView    = require './view/editorial'
+AdView           = require './view/ads'
 
-EditorialFeed = require './model/editorial_feed'
-TrainStatusFeed = require './model/train_status_feed'
+EditorialFeed    = require './model/editorial_feed'
+TrainStatusFeed  = require './model/train_status_feed'
+
 
 init = ->
   class Binder extends inject.Binder
     configure: ->
       @bind(Ajax).to(XMLHttpAjax)
       @bindConstant('navigator').to window.navigator
+      # TODO(nat):  this 'download-cache' binding is only necessary for the
+      # Vistar lib when not running on Cortex, but we still have to bind it to
+      # something or it barfs out when injecting dependents
+      @bindConstant('download-cache').to {}
       config =
         url:                'http://staging.api.vistarmedia.com/api/v1/get_ad/json'
         apiKey:             '833137c5-1531-48b3-91ae-78167a703bbf'
@@ -42,6 +44,7 @@ init = ->
         latitude:           39.985924
         longitude:          -75.12994
         queueSize:          12
+        mimeTypes:          Cortex.player.getMimeTypes()
         displayArea: [
           {
             id:              'display-0'
@@ -52,23 +55,13 @@ init = ->
           }
         ]
 
-      if not Cortex?.player.hasNativeVideoSupport()
-        # Desktop version, get ads from a different end point until we
-        # fix the mime type problem.
-        config.url = 'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
-        config.apiKey = 'b5f66eea-98cb-4224-bccf-6324c80cfd08'
-        config.networkId = 'sthdw8o-Qm6M2-7V4-VsPw'
-
       @bindConstant('config').to config
 
   injector = new inject.Injector(new Binder)
 
   cacher = injector.getInstance Cacher
 
-  adService = injector.getInstance AdService
-
-  player = new Player()
-  adView = new AdView(adService, player)
+  adView = injector.getInstance AdView
 
   trainTrackerView = new TrainTrackerView()
 

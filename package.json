@@ -1,6 +1,6 @@
 {
   "name": "transit-unified-api",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Cortex transit app",
   "author": "Hamza Kaya",
   "email": "help@cortexpowered.com",
@@ -30,6 +30,6 @@
     "honk-di": "0.0.10",
     "moment": "^2.9.0",
     "promise": "^6.1.0",
-    "vistar-html5player": "^1.0.1"
+    "vistar-html5player": "1.2.0"
   }
 }
